@@ -1,6 +1,6 @@
 # Sessionbox One Toolkit
 
-Easily integrate Sessionbox's API and automation features into your project with our ready-to-use NPM package. Streamline profile and team management, proxy settings and automation workflows.
+Easily integrate Sessionbox's API and automation features into your project with our ready-to-use package. Streamline profile and team management, proxy settings and automation workflows.
 
 ## Installation
 
