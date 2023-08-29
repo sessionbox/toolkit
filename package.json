@@ -1,7 +1,7 @@
 {
-  "name": "@sessionbox/automation",
+  "name": "@sessionbox/toolkit",
   "version": "1.0.0",
-  "description": "Automate your profiles",
+  "description": "A sessionbox toolkit for developers.",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
 
