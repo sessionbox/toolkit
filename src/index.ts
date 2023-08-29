@@ -70,7 +70,6 @@ export async function api(apiKey: string): Promise<Endpoint> {
             ...(sbProxyId !== undefined && { "sbProxyId": sbProxyId }),
             ...(url !== undefined && { "url": url })
         };
-        console.log(payload);
         await updateData(apiKey, `http://localhost:54789/local-api/v1/profiles/${profileId}`, payload)
     }
 
@@ -95,7 +94,7 @@ export async function api(apiKey: string): Promise<Endpoint> {
         }
     }
 
-    async function addProxy(name: string, type: string, username: string, password: string, ip: string, port: string, teamId?: string) {  // is team optional here ?? or anything else ??
+    async function addProxy(name: string, type: string, username: string, password: string, ip: string, port: string, teamId?: string) {  
         const payload =  {
             name: name,
             type: type,

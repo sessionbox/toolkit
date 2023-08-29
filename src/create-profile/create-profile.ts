@@ -14,7 +14,6 @@ export async function createTempProfileUrl(apiKey: string, storageType?: string,
         url: targetUrl || defaultLink, 
         profileId: profileId
     };
-    console.log(requestData); // you can change this code to call the actionToken endpoint, since it is already defined.
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -29,7 +28,6 @@ export async function createTempProfileUrl(apiKey: string, storageType?: string,
         throw new Error("Could not fetch resources.")
     };
     const data: Response = await result.json();
-    console.log(data)
     if (data.success) {
         const token = data.token 
         if (!token) {
