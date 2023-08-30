@@ -1,32 +1,36 @@
 {
   "name": "@sessionbox/toolkit",
-  "version": "1.0.0",
-  "description": "A sessionbox toolkit for developers.",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
-
+  "version": "0.0.1",
+  "description": "A SessionBox toolkit for developers.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "node dist/src/index.js",
-    "build": "tsc --project ./tsconfig.json"
+    "build": "tsup src/index.ts --format cjs,esm --dts --out-dir dist",
+    "lint": "tsc",
+    "changeset": "npx changeset"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/domonkos97/automation.git"
+    "url": "git+https://github.com/sessionbox/toolkit.git"
   },
   "keywords": [
     "automation"
   ],
-  "author": "sessionbox",
+  "author": "Box Labs LLC",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/domonkos97/automation/issues"
+    "url": "https://github.com/sessionbox/toolkit/issues"
   },
-  "homepage": "https://github.com/domonkos97/automation#readme",
-  "dependencies": {
-    "dotenv": "^16.3.1",
-    "selenium-webdriver": "^4.11.1"
-  },
+  "homepage": "sessionbox.io",
   "devDependencies": {
-    "@types/selenium-webdriver": "^4.1.15"
+    "@changesets/cli": "^2.26.2",
+    "@types/selenium-webdriver": "^4.1.15",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "selenium-webdriver": "^4.11.1"
   }
 }

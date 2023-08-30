@@ -4,7 +4,7 @@ import { createWebDriver } from "../lib/utils"
 import { Options } from "selenium-webdriver/chrome";
 import { addExtension, downloadExtension } from "./download-extension/download-extension";
 import { getData, postData, deleteData, updateData } from '../lib/fetch'
-import 'dotenv/config';
+// import 'dotenv/config';
 import { StorageType } from "../lib/enums/storage-type";
 import { createActionTokenPayload } from '../lib/interfaces/actionTokenPayload';
 import { Profile } from '../lib/interfaces/profile'
@@ -13,19 +13,22 @@ import { ColorNames } from '../lib/enums/color-names'
 import { Cookie } from '../lib/interfaces/cookie'
 import { Endpoint } from '../lib/interfaces/endpoint'
 
-export let sessionBoxAPI: Endpoint;
-export let sessionBoxAutomation: Automation;
-
 export async function automation(apiKey: string): Promise<Automation> {
-     async function openNewProfile(storageType: 'temp' | 'cloud' | 'local', targetUrl?: string, options?: Options): Promise<void> { 
-        const driver = await createSessionboxDriver(options);
+     async function openNewProfile(storageType: 'temp' | 'cloud' | 'local', targetUrl?: string, driver?: WebDriver): Promise<WebDriver> { 
         const url = await createTempProfileUrl(apiKey, storageType, targetUrl);
+        if (!driver) {
+            driver = await createSessionboxDriver();
+        }
         driver.get(url);
+        return driver;
     }
-    async function openExistingProfile(profileId: string, driverOptions?: Options ) {
-        const driver = await createSessionboxDriver(driverOptions);
+    async function openExistingProfile(profileId: string, driver?: WebDriver ): Promise<WebDriver> {
         const url = await createTempProfileUrl(apiKey, undefined, undefined, profileId);
+        if (!driver) {
+            driver = await createSessionboxDriver();
+        }
         driver.get(url);
+        return driver;
     }
     async function createSessionboxDriver(options?: Options): Promise<WebDriver> {
         await downloadExtension();
@@ -77,7 +80,7 @@ export async function api(apiKey: string): Promise<Endpoint> {
         await deleteData(apiKey, `http://localhost:54789/local-api/v1/profiles/${profileId}`); 
     }
 
-    async function createActionToken(action: string, profileId?: string, url?: string) {
+    async function createActionToken(action: string, profileId?: string, url?: string) { // action should be more specific
         const payload: createActionTokenPayload = {
             action: action, 
             url: url
@@ -129,14 +132,26 @@ export async function api(apiKey: string): Promise<Endpoint> {
         addProxy, 
         removeProxy,
         listProxies,
-        listTeams,
-
+        listTeams
     }
 }
 
-export async function init(apiKey: string) {
-    sessionBoxAutomation = await automation(apiKey);
-    sessionBoxAPI = await api(apiKey);
+/**
+ * Initializes the SessionBox API and Automation instances.
+ *
+ * @param {string} apiKey - The API key for authentication.
+ * @returns {{ sessionBoxAPI: Endpoint, sessionBoxAutomation: Automation }} An object containing initialized API and Automation instances.
+ */
+export async function init(apiKey: string): Promise<{ sessionBoxAPI: Endpoint, sessionBoxAutomation: Automation}> {
+    /**
+     * @type {Automation}
+     */
+    const sessionBoxAutomation: Automation = await automation(apiKey);
+    /**
+     * @type {Endpoint}
+     */
+    const sessionBoxAPI: Endpoint = await api(apiKey);
+    return { sessionBoxAPI, sessionBoxAutomation };
 }
 
 

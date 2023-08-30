@@ -2,9 +2,8 @@ import { Options } from "selenium-webdriver/chrome";
 import { StorageType } from '../../lib/enums/storage-type';
 import { Response } from '../../lib/interfaces/response'
 import { RequestData } from '../../lib/types/request-data'
-import 'dotenv/config';
 
-export async function createTempProfileUrl(apiKey: string, storageType?: string, targetUrl?: string, profileId?: string) { // rename function -> not always creating tempProfile, you can take in session types...
+export async function createTempProfileUrl(apiKey: string, storageType?: string, targetUrl?: string, profileId?: string) { 
     let defaultLink: string | undefined = 'https://www.google.com'
     if (storageType === undefined && targetUrl === undefined && profileId !== undefined) {
         defaultLink = undefined;
