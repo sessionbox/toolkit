@@ -1,49 +1,74 @@
 import { WebDriver } from "selenium-webdriver";
-import { createTempProfileUrl } from './create-profile/create-profile'
+import { createProfileUrl } from './create-profile/create-profile'
 import { createWebDriver } from "../lib/utils"
-import { Options } from "selenium-webdriver/chrome";
+import type { Options } from "selenium-webdriver/chrome";
 import { addExtension, downloadExtension } from "./download-extension/download-extension";
 import { getData, postData, deleteData, updateData } from '../lib/fetch'
-// import 'dotenv/config';
 import { StorageType } from "../lib/enums/storage-type";
 import { createActionTokenPayload } from '../lib/interfaces/actionTokenPayload';
 import { Profile } from '../lib/interfaces/profile'
-import { Automation } from '../lib/interfaces/automation'
+import {Automation, WebDriverWithExtension} from '../lib/interfaces/automation'
 import { ColorNames } from '../lib/enums/color-names'
 import { Cookie } from '../lib/interfaces/cookie'
 import { Endpoint } from '../lib/interfaces/endpoint'
 
-export async function automation(apiKey: string): Promise<Automation> {
-     async function openNewProfile(storageType: 'temp' | 'cloud' | 'local', targetUrl?: string, driver?: WebDriver): Promise<WebDriver> { 
-        const url = await createTempProfileUrl(apiKey, storageType, targetUrl);
-        if (!driver) {
-            driver = await createSessionboxDriver();
+function selenium(apiKey: string): Automation<WebDriver, Options> {
+    type SeleniumDriver = WebDriverWithExtension<WebDriver>;
+    function isWebDriverWithExtension(driver: WebDriver): driver is SeleniumDriver {
+        return (driver as SeleniumDriver).sbExtension;
+    }
+
+    function checkDriver(driver: SeleniumDriver | WebDriver) {
+        if (!isWebDriverWithExtension(driver)) {
+            throw new Error('Driver does not have SessionBox extension installed. Please initialize driver with createSessionBoxDriver.');
         }
-        driver.get(url);
+    }
+
+    async function waitUntilNavigation(driver: SeleniumDriver) {
+        await driver.wait(async () => {
+            return driver!.getCurrentUrl().then(function (url) {
+                return !url.startsWith('https://open.sessionbox.dev') && !url.startsWith('chrome-extension://');
+            });
+        });
+    }
+
+     async function openNewProfile(storageType: 'temp' | 'cloud' | 'local', targetUrl?: string, driver?: SeleniumDriver): Promise<SeleniumDriver> {
+        const url = await createProfileUrl(apiKey, storageType, targetUrl);
+        if (!driver) {
+            driver = await createSessionBoxDriver();
+        }
+        checkDriver(driver);
+        await driver.get(url);
+        await waitUntilNavigation(driver);
+        return driver!;
+    }
+
+    async function openExistingProfile(profileId: string, driver?: SeleniumDriver ): Promise<SeleniumDriver> {
+        const url = await createProfileUrl(apiKey, undefined, undefined, profileId);
+        if (!driver) {
+            driver = await createSessionBoxDriver();
+        }
+        checkDriver(driver);
+        await driver.get(url);
+        await waitUntilNavigation(driver);
         return driver;
     }
-    async function openExistingProfile(profileId: string, driver?: WebDriver ): Promise<WebDriver> {
-        const url = await createTempProfileUrl(apiKey, undefined, undefined, profileId);
-        if (!driver) {
-            driver = await createSessionboxDriver();
-        }
-        driver.get(url);
-        return driver;
-    }
-    async function createSessionboxDriver(options?: Options): Promise<WebDriver> {
+
+    async function createSessionBoxDriver(options?: Options): Promise<SeleniumDriver> {
         await downloadExtension();
         let optionsWithExtension= addExtension(options || undefined);
-        const driver = await createWebDriver(optionsWithExtension);
+        const driver = await createWebDriver(optionsWithExtension) as any;
+        driver.sbExtension = true;
         return driver
     }
     return {
         openNewProfile, 
         openExistingProfile,
-        createSessionboxDriver
+        createSessionBoxDriver: createSessionBoxDriver
     }
 }
 
-export async function api(apiKey: string): Promise<Endpoint> {
+function api(apiKey: string): Endpoint {
     async function listProfiles(): Promise<Profile[]> {
         return await getData(apiKey, 'http://localhost:54789/local-api/v1/profiles');
     }
@@ -142,16 +167,10 @@ export async function api(apiKey: string): Promise<Endpoint> {
  * @param {string} apiKey - The API key for authentication.
  * @returns {{ sessionBoxAPI: Endpoint, sessionBoxAutomation: Automation }} An object containing initialized API and Automation instances.
  */
-export async function init(apiKey: string): Promise<{ sessionBoxAPI: Endpoint, sessionBoxAutomation: Automation}> {
-    /**
-     * @type {Automation}
-     */
-    const sessionBoxAutomation: Automation = await automation(apiKey);
-    /**
-     * @type {Endpoint}
-     */
-    const sessionBoxAPI: Endpoint = await api(apiKey);
-    return { sessionBoxAPI, sessionBoxAutomation };
+export function sessionBoxInit(apiKey: string): { api: Endpoint, selenium: Automation<WebDriver, Options>} {
+    const seleniumAutomation = selenium(apiKey);
+    const sessionBoxAPI = api(apiKey);
+    return { api: sessionBoxAPI, selenium: seleniumAutomation };
 }
 
 

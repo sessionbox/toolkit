@@ -5,6 +5,9 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "engines" : {
+    "node" : ">=18.12.0"
+  },
   "scripts": {
     "start": "node dist/src/index.js",
     "build": "tsup src/index.ts --format cjs,esm --dts --out-dir dist",
