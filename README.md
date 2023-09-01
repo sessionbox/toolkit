@@ -288,16 +288,16 @@ We've defined a `StorageType` enum to make it easy for you to work with differen
 
 To work with cookies, we provide a `Cookie` interface with the following properties:
 
-- `name`: The name of the cookie.
-- `value`: The value of the cookie.
-- `domain`: (Optional)
-- `expirationDate`: (Optional) 
-- `hostOnly`: (Optional) 
-- `httpOnly`: (Optional) 
-- `path`: (Optional) 
-- `sameSite`: (Optional) 
-- `secure`: (Optional) 
-- `session`: (Optional)
+- `name` *- required*
+- `value` *- required*
+- `domain` 
+- `expirationDate` 
+- `hostOnly` 
+- `httpOnly` 
+- `path` 
+- `sameSite` 
+- `secure` 
+- `session` 
 
 ### Profile Interface
 

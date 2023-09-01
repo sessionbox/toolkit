@@ -1,6 +1,6 @@
 {
   "name": "@sessionbox/toolkit",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A SessionBox toolkit for developers.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -19,7 +19,7 @@
     "url": "git+https://github.com/sessionbox/toolkit.git"
   },
   "keywords": [
-    "automation"
+    "automation", "SessionBox", "SessionBox One"
   ],
   "author": "Box Labs LLC",
   "license": "ISC",
