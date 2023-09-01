@@ -1,6 +1,6 @@
 {
   "name": "@sessionbox/toolkit",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A SessionBox toolkit for developers.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
