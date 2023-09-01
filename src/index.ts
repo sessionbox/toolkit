@@ -1,4 +1,4 @@
-import { WebDriver } from "selenium-webdriver";
+import { WebDriver, until } from "selenium-webdriver";
 import { createProfileUrl } from './create-profile/create-profile'
 import { createWebDriver } from "../lib/utils"
 import type { Options } from "selenium-webdriver/chrome";
@@ -11,6 +11,7 @@ import {Automation, WebDriverWithExtension} from '../lib/interfaces/automation'
 import { ColorNames } from '../lib/enums/color-names'
 import { Cookie } from '../lib/interfaces/cookie'
 import { Endpoint } from '../lib/interfaces/endpoint'
+import { urlContains } from "selenium-webdriver/lib/until";
 
 function selenium(apiKey: string): Automation<WebDriver, Options> {
     type SeleniumDriver = WebDriverWithExtension<WebDriver>;
@@ -33,13 +34,16 @@ function selenium(apiKey: string): Automation<WebDriver, Options> {
     }
 
      async function openNewProfile(storageType: 'temp' | 'cloud' | 'local', targetUrl?: string, driver?: SeleniumDriver): Promise<SeleniumDriver> {
+        console.log('i am in');
         const url = await createProfileUrl(apiKey, storageType, targetUrl);
         if (!driver) {
             driver = await createSessionBoxDriver();
         }
         checkDriver(driver);
         await driver.get(url);
+        console.log(url);
         await waitUntilNavigation(driver);
+        console.log('wait is over');
         return driver!;
     }
 

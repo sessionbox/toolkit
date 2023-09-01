@@ -1,9 +1,8 @@
-import { Options } from "selenium-webdriver/chrome";
 import { StorageType } from '../../lib/enums/storage-type';
 import { Response } from '../../lib/interfaces/response'
 import { RequestData } from '../../lib/types/request-data'
 
-export async function createProfileUrl(apiKey: string, storageType?: string, targetUrl?: string, profileId?: string) {
+export async function createProfileUrl(apiKey: string, storageType?: string, targetUrl?: string, profileId?: string) { 
     let defaultLink: string | undefined = 'https://www.google.com'
     if (storageType === undefined && targetUrl === undefined && profileId !== undefined) {
         defaultLink = undefined;

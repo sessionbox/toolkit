@@ -25,7 +25,7 @@ To begin, initialize the package by inserting your API key, which can be located
 ```javascript
 import { init } from '@sessionbox/toolkit'
 
-await init('your-api-key-here');
+const {sessionBoxAPI, sessionBoxAutomation} =  await init('your-api-key-here');
 ```
 
 Once initialized, you can freely utilize any part of the package—such as sessionBoxAPI and sessionBoxAutomation—as long as your application is running and the provided API key is valid.
