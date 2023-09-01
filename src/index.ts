@@ -34,16 +34,13 @@ function selenium(apiKey: string): Automation<WebDriver, Options> {
     }
 
      async function openNewProfile(storageType: 'temp' | 'cloud' | 'local', targetUrl?: string, driver?: SeleniumDriver): Promise<SeleniumDriver> {
-        console.log('i am in');
-        const url = await createProfileUrl(apiKey, storageType, targetUrl);
+=        const url = await createProfileUrl(apiKey, storageType, targetUrl);
         if (!driver) {
             driver = await createSessionBoxDriver();
         }
         checkDriver(driver);
         await driver.get(url);
-        console.log(url);
         await waitUntilNavigation(driver);
-        console.log('wait is over');
         return driver!;
     }
 
