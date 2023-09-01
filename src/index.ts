@@ -34,7 +34,7 @@ function selenium(apiKey: string): Automation<WebDriver, Options> {
     }
 
      async function openNewProfile(storageType: 'temp' | 'cloud' | 'local', targetUrl?: string, driver?: SeleniumDriver): Promise<SeleniumDriver> {
-=        const url = await createProfileUrl(apiKey, storageType, targetUrl);
+        const url = await createProfileUrl(apiKey, storageType, targetUrl);
         if (!driver) {
             driver = await createSessionBoxDriver();
         }
