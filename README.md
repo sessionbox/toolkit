@@ -1,6 +1,6 @@
 # Sessionbox One Toolkit
 
-Easily integrate Sessionbox's API and automation features into your project with our ready-to-use package. Streamline profile and team management, proxy settings and automation workflows.
+Easily integrate Sessionbox's API and automation features into your project with our ready-to-use toolkit. Streamline profile and team management, proxy settings and automation workflows.
 
 ## Installation
 
@@ -23,193 +23,292 @@ yarn add @sessionbox/toolkit
 To begin, initialize the package by inserting your API key, which can be located in your Sessionbox One settings.
 
 ```javascript
-import { init } from '@sessionbox/toolkit'
+import { sessionBoxInit } from '@sessionbox/toolkit'
 
-const {sessionBoxAPI, sessionBoxAutomation} =  await init('your-api-key-here');
+const {api, selenium} =  await sessionBoxInit('your-api-key-here');
 ```
 
-Once initialized, you can freely utilize any part of the package—such as sessionBoxAPI and sessionBoxAutomation—as long as your application is running and the provided API key is valid.
+Once initialized, you can freely utilize any part of the package — such as the api and selenium automation — as long as your application is running and the provided API key is valid.
 
 ```javascript
-import { init, sessionBoxAPI } from '@sessionbox/toolkit'
-
-await init('your-api-key-here');
-const profiles = sessionBoxAPI.listProfiles();
+const profiles = api.listProfiles();
+selenium.openNewProfile('cloud', 'https://www.sessionbox.io')
 ```
 ## API Documentation
 
-1. SessionBox API
+### SessionBox API
 
-    ### `listProfiles`
-    #### Description:
-    Returns a list of all Sessionbox profiles.
+#### `listProfiles`
+##### Description:
+Returns a list of all Sessionbox profiles.
 
-    #### Returns:
-    A Promise that resolves to an array of Profile objects.
+##### Returns:
+A Promise that resolves to an array of Profile objects.
 
-    #### Example Usage:
-    ```javascript
-    const profiles = await sessionBoxAPI.listProfiles();
-    ```
+##### Example Usage:
+```javascript
+const profiles = await api.listProfiles();
+```
 
-    ### `getProfile`
-    #### Description:
-    Return a Sessionbox profile by ID.
+#### `getProfile`
+##### Description:
+Return a Sessionbox profile by ID.
 
-    #### Parameters:
-    `profileId: string`
+##### Parameters:
+`profileId: string`
 
-    #### Returns:
-    A `Promise` that resolves to the `Profile` object corresponding to the provided ID.
+##### Returns:
+A `Promise` that resolves to the `Profile` object corresponding to the provided ID.
 
-    #### Example Usage:
-    ```javascript
-    const profile = await sessionBoxAPI.getProfile('some-profile-id');
-    ```
+##### Example Usage:
+```javascript
+const profile = await api.getProfile('some-profile-id');
+```
 
-    ### `createProfile`
-    #### Description:
-    Creates a new Sessionbox profile with specified attributes.
+#### `createProfile`
+##### Description:
+Creates a new Sessionbox profile with specified attributes.
 
-    #### Parameters:
-    `color: ColorNames`
-    `group: string`
-    `name: string`
-    `url: string`
-    `storageType: 'local' | 'cloud'`
-    `cookies: Cookie[]`
+##### Parameters:
+`color: ColorNames`
+`group: string`
+`name: string`
+`url: string`
+`storageType: 'local' | 'cloud'`
+`cookies: Cookie[]`
 
-    #### Returns:
-    A `Promise` that resolves to the newly created `Profile` object.
+##### Returns:
+A `Promise` that resolves to the newly created `Profile` object.
 
-    #### Example Usage:
-    ```javascript
-    const newProfile = await sessionBoxAPI.createProfile(color, group, name, url, storageType, cookies);
-    ```
+##### Example Usage:
+```javascript
+const newProfile = await api.createProfile(color, group, name, url, storageType, cookies);
+```
 
-    ### `createActionToken`
-    #### Description:
-    Returns an action token.
 
-    #### Parameters:
-    `action: string`
-    `profileId?: string`
-    `url?: string`
+#### `updateProfile`
+##### Description:
+Updates a Sessionbox profile by ID.
 
-    #### Returns:
-    A `Promise` that resolves to the created action token.
+##### Parameters:
+`profileId: string`
+`color: ColorNames`
+`group: string | undefined`
+`name: string | undefined`
+`sbProxyId: string | undefined`
+`url: string | undefined`
 
-    #### Example Usage:
-    ```javascript
-    const actionToken = await sessionBoxAPI.createActionToken('some-action', 'some-profile-id', 'some-url');
-    ```
+##### Returns:
+A `Promise` that resolves once the profile is successfully updated.
 
-    ### `deleteProfile`
-    #### Description:
-    Deletes a Sessionbox profile by ID.
+##### Example Usage:
+```javascript
+await api.updateProfile('some-profile-id', ColorName.BLUE, 'My Group', 'My Profile', 'proxy-id', 'https://www.sessionbox.io);
+```
 
-    #### Parameters:
-    `profileId: string`
 
-    #### Returns:
-    A `Promise` that resolves once the profile is deleted.
+#### `deleteProfile`
+##### Description:
+Deletes a Sessionbox profile by ID.
 
-    #### Example Usage:
-    ```javascript
-    await sessionBoxAPI.deleteProfile('some-profile-id');
-    ```
+##### Parameters:
+`profileId: string`
 
-    ### `addProxy`
-    #### Description:
-    Adds a proxy to Sessionbox.
+##### Returns:
+A `Promise` that resolves once the profile is deleted.
 
-    #### Parameters:
-    `name: string`
-    `type: string`
-    `username: string`
-    `password: string`
-    `ip: string`
-    `port: string`
-    `teamId?: string`
+##### Example Usage:
+```javascript
+await api.deleteProfile('some-profile-id');
+```
 
-    #### Returns:
-    A `Promise` that resolves to whatever is returned when a proxy is added.
+#### `createActionToken`
+##### Description:
+Returns an action token.
 
-    #### Example Usage:
-    ```javascript
-    await sessionBoxAPI.addProxy(name, type, username, password, ip, port, teamId);
-    ```
+##### Parameters:
+`action: string`
+`profileId?: string`
+`url?: string`
 
-    ### `listProxies`
-    #### Description:
-    Lists all proxies in Sessionbox.
+##### Returns:
+A `Promise` that resolves to the created action token.
 
-    #### Returns:
-    A `Promise` that resolves to a list of all proxies.
+##### Example Usage:
+```javascript
+const actionToken = await api.createActionToken('some-action', 'some-profile-id', 'some-url');
+```
 
-    #### Example Usage:
-    ```javascript
-    const proxies = await sessionBoxAPI.listProxies();
-    ```
 
-    ### `removeProxy`
-    #### Description:
-    Deletes a proxy in Sessionbox by ID.
+#### `addProxy`
+##### Description:
+Adds a proxy to Sessionbox.
 
-    #### Parameters:
-    `proxyId: string`
+##### Parameters:
+`name: string`
+`type: string`
+`username: string`
+`password: string`
+`ip: string`
+`port: string`
+`teamId?: string`
 
-    #### Returns:
-    A `Promise` that resolves once the proxy is removed.
+##### Returns:
+A `Promise` that resolves to whatever is returned when a proxy is added.
 
-    #### Example Usage:
-    ```javascript
-    await sessionBoxAPI.removeProxy('some-proxy-id');
-    ```
+##### Example Usage:
+```javascript
+await api.addProxy(name, type, username, password, ip, port, teamId);
+```
 
-    ### `listTeams`
-    #### Description:
-    Lists all teams in Sessionbox.
+#### `listProxies`
+##### Description:
+Lists all proxies in Sessionbox.
 
-    #### Returns:
-    A `Promise` that resolves to a list of all teams.
+##### Returns:
+A `Promise` that resolves to a list of all proxies.
 
-    #### Example Usage:
-    ```javascript
-    const teams = await sessionBoxAPI.listTeams();
-    ```
+##### Example Usage:
+```javascript
+const proxies = await api.listProxies();
+```
 
-2. SessionBox Automation
+#### `removeProxy`
+##### Description:
+Deletes a proxy in Sessionbox by ID.
 
-    ### `openNewProfile`
-    #### Description:
-    Opens a new Sessionbox profile.
+##### Parameters:
+`proxyId: string`
 
-    #### Parameters:
-    `storageType: 'cloud' | 'local' | 'temp'`
-    `url: string`
-    `options?: Options`
+##### Returns:
+A `Promise` that resolves once the proxy is removed.
 
-    #### Returns:
-    A promise that resolves once the profile has been created and the desired URL has been opened in the browser.
+##### Example Usage:
+```javascript
+await api.removeProxy('some-proxy-id');
+```
 
-    #### Example Usage:
-    ```javascript
-   await sessionBoxAutomation.openNewProfile('cloud', 'https://www.google.com);
-    ```
+#### `listTeams`
+##### Description:
+Lists all teams in Sessionbox.
 
-    ### `openExistingProfile`
-    #### Description:
-    Opens an existing Sessionbox profile.
+##### Returns:
+A `Promise` that resolves to a list of all teams.
 
-    #### Parameters:
-    `profileId: string`
-    `options?: Options`
+##### Example Usage:
+```javascript
+const teams = await api.listTeams();
+```
 
-    #### Returns:
-   A promise that resolves once the existing profile has been opened and the desired URL has been loaded in the browser.
+### SessionBox Automation with Selenium
 
-    #### Example Usage:
-    ```javascript
-   await sessionBoxAutomation.openExistingProfile('profile-id');
-    ```
+#### `createSessionboxDriver`
+##### Description:
+Generates a Selenium WebDriver with Sessionbox One extension integration.
+
+##### Parameters:
+`options?: Options`
+
+##### Returns:
+Returns a Promise that resolves to a SeleniumDriver once the extension is downloaded.
+
+##### Example Usage:
+```javascript
+await selenium.openExistingProfile(options);
+```
+
+#### `openNewProfile`
+##### Description:
+Opens a new Sessionbox profile.
+
+##### Parameters:
+`storageType: 'cloud' | 'local' | 'temp'`
+`url: string`
+`driver?: SeleniumDriver`
+
+##### Returns:
+A promise that resolves once the profile has been created and the desired URL has been opened in the browser.
+
+##### Example Usage:
+```javascript
+await selenium.openNewProfile('cloud', 'https://www.google.com);
+```
+
+#### `openExistingProfile`
+##### Description:
+Opens an existing Sessionbox profile.
+
+##### Parameters:
+`profileId: string`
+`driver?: SeleniumDriver`
+
+##### Returns:
+A promise that resolves once the existing profile has been opened and the desired URL has been loaded in the browser.
+
+##### Example Usage:
+```javascript
+await selenium.openExistingProfile('profile-id');
+```
+
+## Types, Enums and Interfaces
+
+### Color Names
+
+We've included a `ColorNames` enum to help you manage various color names consistently in your code. Here are the available color options:
+
+- `ColorNames.RED` ![Red Color](https://via.placeholder.com/15/FF0000/000000?text=+) 
+- `ColorNames.PINK` ![Pink Color](https://via.placeholder.com/15/FFC0CB/000000?text=+) 
+- `ColorNames.PURPLE` ![Purple Color](https://via.placeholder.com/15/800080/000000?text=+) 
+- `ColorNames.DEEP_PURPLE` ![Deep Purple Color](https://via.placeholder.com/15/512DA8/000000?text=+)  
+- `ColorNames.INDIGO` ![Indigo Color](https://via.placeholder.com/15/3F51B5/000000?text=+) 
+- `ColorNames.LIGHT_BLUE` ![Light Blue Color](https://via.placeholder.com/15/03A9F4/000000?text=+)  
+- `ColorNames.CYAN` ![Cyan Color](https://via.placeholder.com/15/00BCD4/000000?text=+) 
+- `ColorNames.TEAL` ![Teal Color](https://via.placeholder.com/15/009688/000000?text=+) 
+- `ColorNames.GREEN` ![Green Color](https://via.placeholder.com/15/4CAF50/000000?text=+) 
+- `ColorNames.LIGHT_GREEN` ![Light Green Color](https://via.placeholder.com/15/8BC34A/000000?text=+)  
+- `ColorNames.LIME` ![Lime Color](https://via.placeholder.com/15/CDDC39/000000?text=+) 
+- `ColorNames.YELLOW` ![Yellow Color](https://via.placeholder.com/15/FFEB3B/000000?text=+) 
+- `ColorNames.AMBER` ![Amber Color](https://via.placeholder.com/15/FFC107/000000?text=+) 
+- `ColorNames.ORANGE` ![Orange Color](https://via.placeholder.com/15/FF9800/000000?text=+) 
+- `ColorNames.DEEP_ORANGE` ![Deep Orange Color](https://via.placeholder.com/15/FF5722/000000?text=+)  
+- `ColorNames.BROWN` ![Brown Color](https://via.placeholder.com/15/795548/000000?text=+) 
+- `ColorNames.GREY` ![Grey Color](https://via.placeholder.com/15/9E9E9E/000000?text=+) 
+- `ColorNames.BLUE_GREY` ![Blue Grey Color](https://via.placeholder.com/15/607D8B/000000?text=+)  
+
+### Storage Types
+
+We've defined a `StorageType` enum to make it easy for you to work with different storage options. Here are the available storage types:
+
+- `StorageType.CLOUD`: Cloud storage.
+- `StorageType.LOCAL`: Local storage.
+- `StorageType.TEMP`: Temporary storage.
+- `StorageType.OPEN`: You can pass `StorageType.OPEN` as a parameter to *createActionToken* to create and action token for existing profiles.
+
+### Cookie Interface
+
+To work with cookies, we provide a `Cookie` interface with the following properties:
+
+- `name`: The name of the cookie.
+- `value`: The value of the cookie.
+- `domain`: (Optional)
+- `expirationDate`: (Optional) 
+- `hostOnly`: (Optional) 
+- `httpOnly`: (Optional) 
+- `path`: (Optional) 
+- `sameSite`: (Optional) 
+- `secure`: (Optional) 
+- `session`: (Optional)
+
+### Profile Interface
+
+To manage user profiles, we provide a `Profile` interface with the following properties:
+
+- `id`: A unique identifier for the profile.
+- `teamId`: The team ID associated with the profile.
+- `launchUrl`: The URL to launch when this profile is loaded.
+- `name`: The name of the profile.
+- `color`: The color associated with the profile.
+- `group`: The group to which the profile belongs.
+- `icon`: The icon representing the profile.
+
+You can use this interface to create, update, and manage user profiles within your application.
