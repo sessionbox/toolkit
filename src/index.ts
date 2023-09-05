@@ -45,7 +45,11 @@ function selenium(apiKey: string): Automation<WebDriver, Options> {
     }
 
     async function openExistingProfile(profileId: string, driver?: SeleniumDriver ): Promise<SeleniumDriver> {
-        const url = await createProfileUrl(apiKey, undefined, undefined, profileId);
+        const temporaryApi = api(apiKey);
+        const profile = await temporaryApi.getProfile(profileId);
+        console.log(profile);
+        const launchUrl = profile.launchUrl;
+        const url = await createProfileUrl(apiKey, undefined, launchUrl, profileId);
         if (!driver) {
             driver = await createSessionBoxDriver();
         }
@@ -112,7 +116,7 @@ function api(apiKey: string): Endpoint {
         if (!url && profileId) {
             const profile = await getProfile(profileId);
             console.log(profile);
-            launchUrl = profile.urls.url;
+            launchUrl = profile.launchUrl;
             console.log(launchUrl);
         }
         const payload: createActionTokenPayload = {

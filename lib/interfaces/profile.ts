@@ -5,10 +5,5 @@ export interface Profile {
     color: string,
     group: string,
     icon: string,
-    urls: {
-        deletable: boolean,
-        id: string,
-        name: string,
-        url: string
-    }
+    launchUrl: string
 }

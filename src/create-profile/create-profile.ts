@@ -4,9 +4,6 @@ import { RequestData } from '../../lib/types/request-data'
 
 export async function createProfileUrl(apiKey: string, storageType?: string, launchUrl?: string, profileId?: string) { 
     let defaultLink: string | undefined = 'https://www.google.com'
-    if (storageType === undefined && launchUrl === undefined && profileId !== undefined) {
-        defaultLink = undefined;
-    }
     const requestData: RequestData = {
         action: storageType || StorageType.OPEN, 
         url: launchUrl || defaultLink, 

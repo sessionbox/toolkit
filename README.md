@@ -4,8 +4,8 @@ Easily integrate Sessionbox's API and automation features into your project with
 
 ## Useful Links
 
-- **Homepage**: [sessionbox.io](https://www.sessionbox.io)
-- **Issues**: [Issue tracker on Github](https://www.github.com/sessionbox/toolkit/issues)
+- **Homepage**: [sessionbox.io](sessionbox.io)
+- **Issues**: [Issue tracker on Github](github.com/sessionbox/toolkit/issues)
 
 ## Prerequisites
 
@@ -275,15 +275,16 @@ await selenium.openExistingProfile('profile-id');
 
 ```typescript
 import { sessionBoxInit } from '@sessionbox/toolkit';
+import { By } from 'selenium-webdriver';
 
 (async () => {
-    const apiKey = 'your-api-key'; 
+    const apiKey = 'your-api-key';
     const { api, selenium } = await sessionBoxInit(apiKey);
 
-    const sessionBoxDriver = selenium.createSessionBoxDriver();
-
+    const sessionBoxDriver = await selenium.createSessionBoxDriver();
+    let driver;
     try {
-        const driver = await openNewProfile('temp', 'https://www.sessionbox.io', sessionBoxDriver);
+        driver = await selenium.openNewProfile('temp', 'https://www.sessionbox.io', sessionBoxDriver);
 
         // Continue to interact with the driver as needed, such as navigating to other URLs or performing DOM manipulations
         await driver.get('https://www.github.com');
@@ -297,7 +298,9 @@ import { sessionBoxInit } from '@sessionbox/toolkit';
         console.error('An error occurred:', error);
     } finally {
         await sessionBoxDriver.quit();
-        await driver.quit();
+        if (driver) {
+          await driver.quit();
+        }
     }
 })();
 ```
@@ -310,21 +313,29 @@ import { sessionBoxInit } from '@sessionbox/toolkit';
     const apiKey = 'your-api-key'; 
     const { api, selenium } = await sessionBoxInit(apiKey);
 
-    const profiles = selenium.listProfiles();
-    const profileIds = profiles.map(profile => return profile.id)
+    const profiles = await api.listProfiles();
+    const profileIds = profiles.map(profile => 
+      {return profile.id
+    })
     
-    const sessionBoxDriver = selenium.createSessionBoxDriver();
-
+    const sessionBoxDriver = await selenium.createSessionBoxDriver();
+    let drivers: any;
     try {
-        const drivers = profileIds.map(profileId => {
-            return await openExistingProfile('profile-ds', sessionBoxDriver);
-        })
+        const drivers = await Promise.all(profileIds.map(async(profileId) => {
+            return await selenium.openExistingProfile(profileId, sessionBoxDriver);
+        }))
+        console.log(drivers)
         drivers[0].get("https://www.github.com");
     } catch (error) {
         console.error('An error occurred:', error);
     } finally {
         await sessionBoxDriver.quit();
-        await driver.quit();
+        if (drivers) {
+          drivers.map(async(driver: any) => {
+            driver.quit();
+          })
+        }
+       
     }
 })();
 ```
