@@ -7,7 +7,10 @@ Easily integrate Sessionbox's API and automation features into your project with
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Documentation](#documentation)
-- [Contributing](#contributing)
+- [API docs](#sessionbox-api)
+- [Selenium docs](#sessionbox-automation-with-selenium)
+- [Examples](#selenium-automation-example-using-this-module)
+- [Types, Enums and Interfaces](#types-enums-and-interfaces)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 
@@ -411,3 +414,9 @@ To manage user profiles, we provide a `Profile` interface with the following pro
 - `icon`: The icon representing the profile.
 
 You can use this interface to create, update, and manage user profiles within your application.
+
+## Licence
+
+ISC
+
+
