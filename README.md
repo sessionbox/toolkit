@@ -293,11 +293,12 @@ import { sessionBoxInit } from '@sessionbox/toolkit';
         await signInButton.click();
 
         const usernameField = await driver.findElement(By.id('login_field'));
-        await usernameField.sendKeys('YourGitHubUsername');
+        await usernameField.sendKeys('your-github-username');
 
     } catch (error) {
         console.error('An error occurred:', error);
     } finally {
+        await sessionBoxDriver.quit();
         await driver.quit();
     }
 })();
@@ -324,6 +325,7 @@ import { sessionBoxInit } from '@sessionbox/toolkit';
     } catch (error) {
         console.error('An error occurred:', error);
     } finally {
+        await sessionBoxDriver.quit();
         await driver.quit();
     }
 })();
