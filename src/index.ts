@@ -71,33 +71,34 @@ function selenium(apiKey: string): Automation<WebDriver, Options> {
 
 function api(apiKey: string): Endpoint {
     async function listProfiles(): Promise<Profile[]> {
-        return await getData(apiKey, 'http://localhost:54789/local-api/v1/profiles');
+        return await getData(apiKey, 'http://localhost:54789/local-api/v1/profiles', 'profiles');
     }
 
     async function getProfile(profileId: string): Promise<Profile> {
-        return await getData(apiKey, `http://localhost:54789/local-api/v1/profiles/${profileId}`);
+        return await getData(apiKey, `http://localhost:54789/local-api/v1/profiles/${profileId}`, "profile");
     }
 
-    async function createProfile(color: ColorNames, group: string, name: string, url: string, storageType: 'local' | 'cloud', cookies: Cookie[]) {
+    async function createProfile(color: ColorNames, group: string, name: string, url: string, storageType: 'local' | 'cloud', cookies?: Cookie[], sbProxyId?: string): Promise<Profile> {
         const payload = {
             "color": color,
             "group": group,
             "name": name,
             "url": url,
             "storageType": storageType,
-            "cookies": cookies
+            "cookies": cookies, 
+            "sbProxyId": sbProxyId
         }
-        const result = await postData(apiKey, 'http://localhost:54789/local-api/v1/profiles', payload)
+        const result = await postData(apiKey, 'http://localhost:54789/local-api/v1/profiles', "profile", payload)
         return result;
     }
     
     async function updateProfile(profileId: string, color?: ColorNames | undefined, group?: string | undefined, name?: string | undefined, sbProxyId?: string | undefined, url?: string | undefined): Promise<void> {
         const payload = {
-            ...(color !== undefined && { "color": color }),
-            ...(group !== undefined && { "group": group }),
-            ...(name !== undefined && { "name": name }),
-            ...(sbProxyId !== undefined && { "sbProxyId": sbProxyId }),
-            ...(url !== undefined && { "url": url })
+            ...(color !== undefined ? { "color": color } : { "color": undefined }),
+            ...(group !== undefined ? { "group": group } : { "group": undefined }),
+            ...(name !== undefined ? { "name": name } : { "name": undefined }),
+            ...(sbProxyId !== undefined ? { "sbProxyId": sbProxyId } : { "sbProxyId": undefined }),
+            ...(url !== undefined ? { "url": url } : { "url": undefined })
         };
         await updateData(apiKey, `http://localhost:54789/local-api/v1/profiles/${profileId}`, payload)
     }
@@ -106,21 +107,26 @@ function api(apiKey: string): Endpoint {
         await deleteData(apiKey, `http://localhost:54789/local-api/v1/profiles/${profileId}`); 
     }
 
-    async function createActionToken(action: string, profileId?: string, url?: string) { // action should be more specific
+    async function createActionToken(action: "open" | "local" | "cloud" | "temp", url?: string, profileId?: string) { // action should be more specific
+        let launchUrl;
+        if (!url && profileId) {
+            const profile = await getProfile(profileId);
+            console.log(profile);
+            launchUrl = profile.urls.url;
+            console.log(launchUrl);
+        }
         const payload: createActionTokenPayload = {
             action: action, 
-            url: url
+            url: url || launchUrl
         }
-
+        console.log(payload)
+        
         if (action = StorageType.OPEN) {
             payload.profileId = profileId;
         }
-        const result  = await postData(apiKey, 'http://localhost:54789/local-api/v1/action-token', payload);
-        if (result.success) {
-            return result.token;
-        } else {
-            throw new Error('Token not found');
-        }
+        console.log(payload);
+        const result  = await postData(apiKey, 'http://localhost:54789/local-api/v1/action-token', "token", payload);
+        return result;
     }
 
     async function addProxy(name: string, type: string, username: string, password: string, ip: string, port: string, teamId?: string) {  
@@ -133,11 +139,11 @@ function api(apiKey: string): Endpoint {
             port: port,
             teamId: teamId
         }
-        return await postData(apiKey, 'http://localhost:54789/local-api/v1/proxies', payload)
+        return await postData(apiKey, 'http://localhost:54789/local-api/v1/proxies', "proxy", payload)
     }
 
     async function listProxies() {
-        return await getData(apiKey, 'http://localhost:54789/local-api/v1/proxies')
+        return await getData(apiKey, 'http://localhost:54789/local-api/v1/proxies', "proxies")
     }
 
     async function removeProxy(proxyId: string) {
@@ -145,7 +151,7 @@ function api(apiKey: string): Endpoint {
     }
 
     async function listTeams() {
-        return await getData(apiKey, 'http://localhost:54789/local-api/v1/teams')
+        return await getData(apiKey, 'http://localhost:54789/local-api/v1/teams', "teams")
     }
 
     return {

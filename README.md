@@ -2,15 +2,37 @@
 
 Easily integrate Sessionbox's API and automation features into your project with our ready-to-use toolkit. Streamline profile and team management, proxy settings and automation workflows.
 
-## Installation
+## Useful Links
 
+- **Homepage**: [Link to Project Homepage](https://your-project-homepage.com)
+- **Issues**: [Link to Issue Tracker](https://github.com/your-username/your-project-name/issues)
+- **Documentation**: [Link to Project Documentation](https://your-project-docs.com)
+- **Demo**: [Link to Project Demo](https://your-project-demo.com)
+
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+
+- **Node.js**: Make sure you have Node.js installed. This project requires a minimum Node.js version of 18.x or higher.
+
+- **Selenium WebDriver**: Selenium WebDriver is used as a peer dependency in this project. You will need to have it installed in your project separately. You can install it using:
+
+```bash
+npm install selenium-webdriver
+```
+Additionally, if you're using TypeScript, it's recommended to install the TypeScript typings for Selenium WebDriver:
+
+```bash
+npm install @types/selenium-webdriver
+```
+
+## Installation
 
 Install the package using npm:
 
 ```bash
 npm install @sessionbox/toolkit
 ```
-
 
 Or with yarn:
 
@@ -32,7 +54,7 @@ Once initialized, you can freely utilize any part of the package — such as the
 
 ```javascript
 const profiles = api.listProfiles();
-selenium.openNewProfile('cloud', 'https://www.sessionbox.io')
+await selenium.openNewProfile('cloud', 'https://www.sessionbox.io')
 ```
 ## API Documentation
 
@@ -85,7 +107,6 @@ A `Promise` that resolves to the newly created `Profile` object.
 const newProfile = await api.createProfile(color, group, name, url, storageType, cookies);
 ```
 
-
 #### `updateProfile`
 ##### Description:
 Updates a Sessionbox profile by ID.
@@ -103,9 +124,10 @@ A `Promise` that resolves once the profile is successfully updated.
 
 ##### Example Usage:
 ```javascript
-await api.updateProfile('some-profile-id', ColorName.BLUE, 'My Group', 'My Profile', 'proxy-id', 'https://www.sessionbox.io);
-```
+import { ColorNames } from '@sessionbox/toolkit';
 
+await api.updateProfile('some-profile-id', ColorNames.BLUE, 'My Group', 'My Profile', 'proxy-id', 'https://www.sessionbox.io);
+```
 
 #### `deleteProfile`
 ##### Description:
@@ -127,7 +149,7 @@ await api.deleteProfile('some-profile-id');
 Returns an action token.
 
 ##### Parameters:
-`action: string`
+`action: 'cloud' | 'local' | 'temp' | 'open'`
 `profileId?: string`
 `url?: string`
 
@@ -138,7 +160,6 @@ A `Promise` that resolves to the created action token.
 ```javascript
 const actionToken = await api.createActionToken('some-action', 'some-profile-id', 'some-url');
 ```
-
 
 #### `addProxy`
 ##### Description:
@@ -248,6 +269,64 @@ A promise that resolves once the existing profile has been opened and the desire
 ##### Example Usage:
 ```javascript
 await selenium.openExistingProfile('profile-id');
+```
+
+## Selenium Automation Example using this module
+
+### Open a new profile
+
+```typescript
+import { sessionBoxInit } from '@sessionbox/toolkit';
+
+(async () => {
+    const apiKey = 'your-api-key'; 
+    const { api, selenium } = await sessionBoxInit(apiKey);
+
+    const sessionBoxDriver = selenium.createSessionBoxDriver();
+
+    try {
+        const driver = await openNewProfile('temp', 'https://www.sessionbox.io', sessionBoxDriver);
+
+        // Continue to interact with the driver as needed, such as navigating to other URLs or performing DOM manipulations
+        await driver.get('https://www.github.com');
+        const signInButton = await driver.findElement(By.xpath('//a[text()="Sign in"]'));
+        await signInButton.click();
+
+        const usernameField = await driver.findElement(By.id('login_field'));
+        await usernameField.sendKeys('YourGitHubUsername');
+
+    } catch (error) {
+        console.error('An error occurred:', error);
+    } finally {
+        await driver.quit();
+    }
+})();
+```
+### Open existing profile
+
+```typescript
+import { sessionBoxInit } from '@sessionbox/toolkit';
+
+(async () => {
+    const apiKey = 'your-api-key'; 
+    const { api, selenium } = await sessionBoxInit(apiKey);
+
+    const profiles = selenium.listProfiles();
+    const profileIds = profiles.map(profile => return profile.id)
+    
+    const sessionBoxDriver = selenium.createSessionBoxDriver();
+
+    try {
+        const drivers = profileIds.map(profileId => {
+            return await openExistingProfile('profile-ds', sessionBoxDriver);
+        })
+        drivers[0].get("https://www.github.com");
+    } catch (error) {
+        console.error('An error occurred:', error);
+    } finally {
+        await driver.quit();
+    }
+})();
 ```
 
 ## Types, Enums and Interfaces

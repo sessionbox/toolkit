@@ -1,4 +1,4 @@
-export async function getData(apiKey: string, endpoint: string) {
+export async function getData(apiKey: string, endpoint: string, dataKey: string) {
     try {
         const response = await fetch(endpoint, {
             method: 'GET',
@@ -15,7 +15,15 @@ export async function getData(apiKey: string, endpoint: string) {
         if (response.headers.get("content-type")?.includes("application/json")) {
             data = await response.json();
         }
-        return data;
+        if (data.success){
+            try {
+                return data[dataKey]
+            } catch {
+                throw new Error("No such key.")
+            }
+        } else {
+            throw new Error("Fetch was unsuccessfull.")
+        }
 
     } catch (error) {
         console.error('Error in getData:', error);
@@ -25,7 +33,7 @@ export async function getData(apiKey: string, endpoint: string) {
 
 
 
-export async function postData(apiKey: string, endpoint: string, payload?: any) {
+export async function postData(apiKey: string, endpoint: string, dataKey: string, payload?: any) {
     const options: RequestInit = {
         method: 'POST',
         headers: {
@@ -43,7 +51,15 @@ export async function postData(apiKey: string, endpoint: string, payload?: any) 
             throw new Error(`Request failed with status: ${response.statusText}`);
         }
         const data = await response.json();
-        return data;
+        if (data.success){
+            try {
+                return data[dataKey]
+            } catch {
+                throw new Error("No such key.")
+            }
+        } else {
+            throw new Error("Fetch was unsuccessfull.")
+        }
 
     } catch (error) {
         console.error('Error in postData:', error);
@@ -81,7 +97,9 @@ export async function updateData(apiKey: string, endpoint: string, payload?: any
         const response = await fetch(endpoint, {
             method: 'PUT',
             headers: {
-                'Authorization': `${apiKey}`
+                'Authorization': `${apiKey}`,
+                'Content-Type' : 'application/json'
+
             },
             body: JSON.stringify(payload)
         });

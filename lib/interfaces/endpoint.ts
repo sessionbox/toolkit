@@ -25,20 +25,20 @@ export interface Endpoint {
      * @param {string} name - Profile name.
      * @param {string} url - Profile URL.
      * @param {string} storageType - Profile storage type. Can be 'local' or 'cloud'.
-     * @param {string} cookies - Profile cookies. 
+     * @param {string} cookies - Profile cookies (Optional).
      * @returns {Promise<Profile>} A promise that resolves to the result of the profile creation.
      */
-    createProfile: (color: ColorNames, group: string, name: string, url: string, storageType: 'local' | 'cloud', cookies: Cookie[]) => Promise<Profile>;
+    createProfile: (color: ColorNames, group: string, name: string, url: string, storageType: 'local' | 'cloud', cookies?: Cookie[], sbProxyId?: string) => Promise<Profile>;
 
     /**
      * Returns an action token.
      *
      * @param action - Profile color.
-     * @param profileId - Profile Id.
-     * @param url - Profile URL.
+     * @param url - Profile URL (Optional).
+     * @param profileId - Profile Id (Optional).
      * @returns {Promise<string>} A promise that resolves to the created action token.
      */
-    createActionToken: (action: string, profileId?: string, url?: string) => Promise<string>;
+    createActionToken: (action: "open" | "local" | "cloud" | "temp", url?: string, profileId?: string) => Promise<string>;
 
     /**
      * Deletes a Sessionbox profile by ID.

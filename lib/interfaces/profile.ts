@@ -1,9 +1,14 @@
 export interface Profile {
     id: string,
     teamId: string,
-    launchUrl: string,
     name: string,
     color: string,
     group: string,
-    icon: string
+    icon: string,
+    urls: {
+        deletable: boolean,
+        id: string,
+        name: string,
+        url: string
+    }
 }
