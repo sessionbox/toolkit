@@ -2,6 +2,15 @@
 
 Easily integrate Sessionbox's API and automation features into your project with our ready-to-use toolkit. Streamline profile and team management, proxy settings and automation workflows.
 
+- [Useful Links](#useful-links)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+
 ## Useful Links
 
 - **Homepage**: [sessionbox.io](http://sessionbox.io)
@@ -54,7 +63,7 @@ Once initialized, you can freely utilize any part of the package — such as the
 const profiles = api.listProfiles();
 await selenium.openNewProfile('cloud', 'https://www.sessionbox.io')
 ```
-## API Documentation
+## Documentation
 
 ### SessionBox API
 

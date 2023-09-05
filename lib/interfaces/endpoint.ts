@@ -1,6 +1,6 @@
 import { ColorNames } from '../enums/color-names';
 import { Cookie } from './cookie';
-import { Profile } from './profile'
+import { Profile, ProfileDTO } from './profile'
 
 export interface Endpoint {
     /**
@@ -8,14 +8,14 @@ export interface Endpoint {
      *
      * @returns {Promise<Profile[]>} A promise containing an array of Profile objects.
      */
-    listProfiles: () => Promise<Profile[]> 
+    listProfiles: () => Promise<ProfileDTO[]> 
     
     /**
      * Return a Sessionbox profile by ID.
      * @param {string} profileID - The ID of the profile to retrieve.
      * @returns {Promise<Profile>} A Promise containing the Profile object corresponding to the provided ID.
      */
-    getProfile: (profileId: string) => Promise<Profile> 
+    getProfile: (profileId: string) => Promise<ProfileDTO> 
 
     /**
      * Creates a Sessionbox profile with the specified attributes.

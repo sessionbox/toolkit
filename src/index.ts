@@ -6,13 +6,11 @@ import { addExtension, downloadExtension } from "./download-extension/download-e
 import { getData, postData, deleteData, updateData } from '../lib/fetch'
 import { StorageType } from "../lib/enums/storage-type";
 import { createActionTokenPayload } from '../lib/interfaces/actionTokenPayload';
-import { Profile } from '../lib/interfaces/profile'
+import { Profile, ProfileDTO, profileToDTO } from '../lib/interfaces/profile'
 import {Automation, WebDriverWithExtension} from '../lib/interfaces/automation'
 import { ColorNames } from '../lib/enums/color-names'
 import { Cookie } from '../lib/interfaces/cookie'
 import { Endpoint } from '../lib/interfaces/endpoint'
-import { urlContains } from "selenium-webdriver/lib/until";
-
 function selenium(apiKey: string): Automation<WebDriver, Options> {
     type SeleniumDriver = WebDriverWithExtension<WebDriver>;
     function isWebDriverWithExtension(driver: WebDriver): driver is SeleniumDriver {
@@ -74,12 +72,16 @@ function selenium(apiKey: string): Automation<WebDriver, Options> {
 }
 
 function api(apiKey: string): Endpoint {
-    async function listProfiles(): Promise<Profile[]> {
-        return await getData(apiKey, 'http://localhost:54789/local-api/v1/profiles', 'profiles');
+    async function listProfiles(): Promise<ProfileDTO[]> {
+        const profiles = await getData(apiKey, 'http://localhost:54789/local-api/v1/profiles', 'profiles');
+        return profiles.map((profile: Profile) => {
+           return profileToDTO(profile);
+        })
     }
 
-    async function getProfile(profileId: string): Promise<Profile> {
-        return await getData(apiKey, `http://localhost:54789/local-api/v1/profiles/${profileId}`, "profile");
+    async function getProfile(profileId: string): Promise<ProfileDTO> {
+        const profile = await getData(apiKey, `http://localhost:54789/local-api/v1/profiles/${profileId}`, "profile");
+        return profileToDTO(profile);
     }
 
     async function createProfile(color: ColorNames, group: string, name: string, url: string, storageType: 'local' | 'cloud', cookies?: Cookie[], sbProxyId?: string): Promise<Profile> {
@@ -104,7 +106,7 @@ function api(apiKey: string): Endpoint {
             ...(sbProxyId !== undefined ? { "sbProxyId": sbProxyId } : { "sbProxyId": undefined }),
             ...(url !== undefined ? { "url": url } : { "url": undefined })
         };
-        await updateData(apiKey, `http://localhost:54789/local-api/v1/profiles/${profileId}`, payload)
+        return await updateData(apiKey, `http://localhost:54789/local-api/v1/profiles/${profileId}`, payload)
     }
 
     async function deleteProfile(profileId: string) {
