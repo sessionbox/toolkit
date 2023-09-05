@@ -2,14 +2,14 @@ import { StorageType } from '../../lib/enums/storage-type';
 import { Response } from '../../lib/interfaces/response'
 import { RequestData } from '../../lib/types/request-data'
 
-export async function createProfileUrl(apiKey: string, storageType?: string, targetUrl?: string, profileId?: string) { 
+export async function createProfileUrl(apiKey: string, storageType?: string, launchUrl?: string, profileId?: string) { 
     let defaultLink: string | undefined = 'https://www.google.com'
-    if (storageType === undefined && targetUrl === undefined && profileId !== undefined) {
+    if (storageType === undefined && launchUrl === undefined && profileId !== undefined) {
         defaultLink = undefined;
     }
     const requestData: RequestData = {
         action: storageType || StorageType.OPEN, 
-        url: targetUrl || defaultLink, 
+        url: launchUrl || defaultLink, 
         profileId: profileId
     };
     const requestOptions = {
