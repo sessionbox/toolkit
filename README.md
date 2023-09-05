@@ -4,8 +4,8 @@ Easily integrate Sessionbox's API and automation features into your project with
 
 ## Useful Links
 
-- **Homepage**: [sessionbox.io](sessionbox.io)
-- **Issues**: [Issue tracker on Github](github.com/sessionbox/toolkit/issues)
+- **Homepage**: [sessionbox.io](http://sessionbox.io)
+- **Issues**: [Issue tracker on Github](http://github.com/sessionbox/toolkit/issues)
 
 ## Prerequisites
 
