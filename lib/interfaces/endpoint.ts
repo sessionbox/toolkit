@@ -28,7 +28,7 @@ export interface Endpoint {
      * @param {string} cookies - Profile cookies (Optional).
      * @returns {Promise<Profile>} A promise that resolves to the result of the profile creation.
      */
-    createProfile: (color: ColorNames, group: string, name: string, url: string, storageType: 'local' | 'cloud', cookies?: Cookie[], sbProxyId?: string) => Promise<Profile>;
+    createProfile: (color: ColorNames, group: string, teamId: string, name: string, url: string, storageType: 'local' | 'cloud', cookies?: Cookie[], sbProxyId?: string) => Promise<Profile>;
 
     /**
      * Returns an action token.

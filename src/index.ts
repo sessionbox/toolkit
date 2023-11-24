@@ -84,10 +84,11 @@ function api(apiKey: string): Endpoint {
         return profileToDTO(profile);
     }
 
-    async function createProfile(color: ColorNames, group: string, name: string, url: string, storageType: 'local' | 'cloud', cookies?: Cookie[], sbProxyId?: string): Promise<Profile> {
+    async function createProfile(color: ColorNames, group: string, teamId: string,  name: string, url: string, storageType: 'local' | 'cloud', cookies?: Cookie[], sbProxyId?: string): Promise<Profile> {
         const payload = {
             "color": color,
             "group": group,
+            "teamId": teamId,
             "name": name,
             "url": url,
             "storageType": storageType,
